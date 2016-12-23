@@ -3,8 +3,7 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="sigildesigns.inventory.CatalogActivity">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
+        android:id="@+id/action_insert_dummy_data"
         android:title="@string/insert_dummy_data"
         app:showAsAction="never"/>
     <item

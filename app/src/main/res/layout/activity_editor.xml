@@ -11,8 +11,7 @@
         android:id="@+id/editor_view_image"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_gravity="center"
-        android:src="@drawable/placeholder"/>
+        android:layout_gravity="center"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -1,19 +1,27 @@
 package sigildesigns.inventory;
 
 import android.app.LoaderManager;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
-public class CatalogActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+import sigildesigns.inventory.data.ItemContract;
+
+public class CatalogActivity extends AppCompatActivity implements LoaderManager
+        .LoaderCallbacks<Cursor> {
 
     private static final int ITEM_LOADER = 0;
 
@@ -41,6 +49,66 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
         View emptyView = findViewById(R.id.empty_view);
         itemListView.setEmptyView(emptyView);
+
+        // Setup an Adapter to create a list item for each row or item data in the Cursor.
+        // There is no item data yet (until the loader finishes) so pass in null for the Cursor.
+        mCursorAdapter = new ItemCursorAdapter(this, null);
+        itemListView.setAdapter(mCursorAdapter);
+
+        // Setup item click listener
+        itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                // Create a new intent to go to {@link EditorActivity}
+                Intent intent = new Intent(CatalogActivity.this, EditorActivity.class);
+
+                /**
+                 * Form the content URI that represents the specific item that was clicked on,
+                 * by appending the "id" (passed as input to this method) onto the
+                 * {@link ItemEntry#CONTENT_URI}.
+                 * For example, the URI would be "content://sigildesigns.inventory/items/2" if the
+                 * item with the ID 2 was clicked on.
+                 */
+                Uri currentItemUri = ContentUris.withAppendedId(ItemContract.ItemEntry
+                        .CONTENT_URI, id);
+
+                // Set the URI on the data field of the intent
+                intent.setData(currentItemUri);
+                // Launch the {@link EditorActivity} to display the data for the current item.
+                startActivity(intent);
+            }
+        });
+
+        // Kick off the loader
+        getLoaderManager().initLoader(ITEM_LOADER, null, this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    // Helper method to insert hardcoded item data into the database. For debugging purposes only.
+    private void insertItem() {
+        // Create a ContentValues object where column names are the keys, and item attributes are
+        // values.
+        ContentValues values = new ContentValues();
+        values.put(ItemContract.ItemEntry.COLUMN_ITEM_NAME, "Kaladesh Booster Pack");
+        values.put(ItemContract.ItemEntry.COLUMN_ITEM_QTY, 10);
+        values.put(ItemContract.ItemEntry.COLUMN_ITEM_PRICE, 3.99);
+        values.put(ItemContract.ItemEntry.COLUMN_ITEM_DESCRIPTION, "15 card booster pack for the " +
+                "MTG set Kaladesh.");
+        values.put(ItemContract.ItemEntry.COLUMN_ITEM_PICTURE, R.drawable.kaladeshboosters);
+
+        // Insert the dummy data into the database
+        Uri newUri = getContentResolver().insert(ItemContract.ItemEntry.CONTENT_URI, values);
+    }
+
+    // Helper method to delete all items in the database
+    private void deleteAllItems() {
+        int rowsDeleted = getContentResolver().delete(ItemContract.ItemEntry.CONTENT_URI, null,
+                null);
+        Log.v("CatalogActivity", rowsDeleted + " rows deleted from item database");
     }
 
     @Override
@@ -55,13 +123,14 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_insert_dummy_data:
+                insertItem();
+                return true;
+            case R.id.action_delete_all_entries:
+                deleteAllItems();
+                return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
