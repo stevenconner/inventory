@@ -37,6 +37,10 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
 
         // Find the ListView which will be populated with item data
         ListView itemListView = (ListView) findViewById(R.id.list_view_items);
+
+        // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
+        View emptyView = findViewById(R.id.empty_view);
+        itemListView.setEmptyView(emptyView);
     }
 
     @Override
