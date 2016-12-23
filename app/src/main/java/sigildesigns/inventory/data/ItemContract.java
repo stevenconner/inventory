@@ -11,7 +11,8 @@ import android.provider.BaseColumns;
 public class ItemContract {
     // To prevent someone from accidentally instantiating the contract class, give it an empty
     // constructor.
-    private ItemContract() {}
+    private ItemContract() {
+    }
 
     // Content Authority for the app
     public static final String CONTENT_AUTHORITY = "sigildesigns.inventory";
@@ -30,7 +31,12 @@ public class ItemContract {
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_ITEMS);
 
         // The MIME type of the {@link #CONTENT_URI} for a list of items
-        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_ITEMS;
+        public static final String CONTENT_LIST_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE +
+                "/" + CONTENT_AUTHORITY + "/" + PATH_ITEMS;
+
+        // The MIME type of the {@link #CONTENT_URI} for a single item
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE +
+                "/" + CONTENT_AUTHORITY + "/" + PATH_ITEMS;
 
         // Name of the database table for items
         public static final String TABLE_NAME = "items";
