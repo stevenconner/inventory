@@ -21,6 +21,11 @@ public class ItemProvider extends ContentProvider {
     private static final int ITEM_ID = 101;
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
+    static {
+        sUriMatcher.addURI(ItemContract.CONTENT_AUTHORITY, ItemContract.PATH_ITEMS, ITEMS);
+        sUriMatcher.addURI(ItemContract.CONTENT_AUTHORITY, ItemContract.PATH_ITEMS + "/#", ITEM_ID);
+    }
+
     // Tag for the log messages
     public static final String LOG_TAG = ItemProvider.class.getSimpleName();
     private ItemDbHelper mDbHelper;

@@ -3,6 +3,7 @@ package sigildesigns.inventory;
 import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -135,17 +136,31 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return null;
+    public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
+        // Define a projection that specifies the columns from the table we care about.
+        String[] projection = {
+                ItemContract.ItemEntry._ID,
+                ItemContract.ItemEntry.COLUMN_ITEM_NAME,
+                ItemContract.ItemEntry.COLUMN_ITEM_QTY,
+                ItemContract.ItemEntry.COLUMN_ITEM_PRICE };
+        // This loader will execute the ContentProvider's query method on a background thread
+        return new CursorLoader(this,               // Parent activity context
+                ItemContract.ItemEntry.CONTENT_URI, // Provider content URI to query
+                projection,                         // Columns to include in the resulting Cursor
+                null,                               // No selection clause
+                null,                               // No selection arguments
+                null);                              // Default sort order
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-
+        // Update {@link ItemCursorAdapter} with this new cursor containing updated item data
+        mCursorAdapter.swapCursor(cursor);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        // Callback called when the data needs to be deleted
+        mCursorAdapter.swapCursor(null);
     }
 }
