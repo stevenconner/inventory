@@ -11,4 +11,16 @@
     <string name="editor_action_delete">Delete</string>
     <string name="action_delete_all_entries">Delete All Entries</string>
     <string name="empty_view_title_text">Get started by adding an item to the inventory.</string>
+    <string name="add_new_item">Add an Item</string>
+    <string name="edit_item">Edit Item</string>
+    <string name="error_saving_item">Error with saving item.</string>
+    <string name="item_saved">Item Saved.</string>
+    <string name="alert_dialog_discard_changes">Discard your changes and quit editing?</string>
+    <string name="alert_dialog_positive_button">Discard</string>
+    <string name="alert_dialog_negative_button">Keep Editing</string>
+    <string name="alert_dialog_delete_item_prompt">Delete this item?</string>
+    <string name="alert_dialog_delete">Delete</string>
+    <string name="alert_dialog_cancel">Cancel</string>
+    <string name="error_deleting_item">Error with deleting item.</string>
+    <string name="item_deleted">Item Deleted.</string>
 </resources>

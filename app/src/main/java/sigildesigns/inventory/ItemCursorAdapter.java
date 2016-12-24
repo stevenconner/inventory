@@ -54,13 +54,15 @@ public class ItemCursorAdapter extends CursorAdapter {
                 .COLUMN_ITEM_NAME));
         int qty = cursor.getInt(cursor.getColumnIndexOrThrow(ItemContract.ItemEntry
                 .COLUMN_ITEM_QTY));
+        // Convert qty to a string
+        String stringQty = String.valueOf(qty);
         float price = cursor.getFloat(cursor.getColumnIndexOrThrow(ItemContract.ItemEntry
                 .COLUMN_ITEM_PRICE));
         // Convert price to a string
         String stringPrice = String.valueOf(price);
         // Populate fields with extracted properties
         tvName.setText(name);
-        tvQty.setText(qty);
+        tvQty.setText(stringQty);
         tvPrice.setText(stringPrice);
     }
 }

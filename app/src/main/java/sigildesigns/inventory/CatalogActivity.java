@@ -32,8 +32,6 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -44,11 +42,14 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager
             }
         });
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         // Find the ListView which will be populated with item data
         ListView itemListView = (ListView) findViewById(R.id.list_view_items);
 
         // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
-        View emptyView = findViewById(R.id.empty_view);
+        View emptyView = findViewById(R.id.empty_title_text);
         itemListView.setEmptyView(emptyView);
 
         // Setup an Adapter to create a list item for each row or item data in the Cursor.

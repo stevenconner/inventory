@@ -1,50 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:padding="16dp"
-              tools:context=".EditorActivity">
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".EditorActivity">
 
-    <ImageView
-        android:id="@+id/editor_view_image"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_gravity="center"/>
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-    <RelativeLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/editor_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="?android:attr/actionBarSize"
+        android:padding="16dp"
+        tools:context=".EditorActivity">
 
-        <EditText
-            android:id="@+id/editor_view_name_et"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:hint="@string/editor_name_hint"/>
 
-        <EditText
-            android:id="@+id/editor_view_price_et"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:hint="@string/editor_price_hint"/>
+        <ImageView
+            android:id="@+id/editor_view_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:src="@drawable/placeholder"/>
 
-        <EditText
-            android:id="@+id/editor_view_description_et"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@id/editor_view_name_et"
-            android:hint="@string/editor_description_hint"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/editor_view_qty_et"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:hint="@string/editor_qty_hint"
-            android:layout_below="@id/editor_view_price_et"/>
-    </RelativeLayout>
-</LinearLayout>
+            <EditText
+                android:id="@+id/editor_view_name_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:hint="@string/editor_name_hint"/>
+
+            <EditText
+                android:id="@+id/editor_view_price_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:hint="@string/editor_price_hint"/>
+
+            <EditText
+                android:id="@+id/editor_view_description_et"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/editor_view_name_et"
+                android:hint="@string/editor_description_hint"/>
+
+            <EditText
+                android:id="@+id/editor_view_qty_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/editor_view_price_et"
+                android:hint="@string/editor_qty_hint"/>
+        </RelativeLayout>
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
