@@ -141,7 +141,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
         // If the qty is not provided by the user, don't try to parse the string into an integer,
         // instead use 0 as a default.
         int qtyInt = 0;
-        if (!TextUtils.isEmpty(qtyString)){
+        if (!TextUtils.isEmpty(qtyString)) {
             qtyInt = Integer.valueOf(qtyString);
         }
 
@@ -181,7 +181,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
                 Toast.makeText(this, R.string.item_saved, Toast.LENGTH_SHORT).show();
             }
         } else {
-            // Otherwise this is an existing item, so update the item with content URI: mCurrentItemUri
+            // Otherwise this is an existing item, so update the item with content URI:
+            // mCurrentItemUri
             // and pass in the new ContentValues. Pass in null for the selection and selectionArgs
             // because mCurrentItemUri will already identify the correct row in the database that
             // we want to modify.
@@ -224,7 +225,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
                         finish();
                     }
                 };
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option.
             case R.id.action_save:
                 // Save item to database
@@ -291,7 +292,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
                 ItemContract.ItemEntry.COLUMN_ITEM_PRICE,
                 ItemContract.ItemEntry.COLUMN_ITEM_DESCRIPTION,
                 ItemContract.ItemEntry.COLUMN_ITEM_PICTURE,
-                ItemContract.ItemEntry.COLUMN_ITEM_CONTACTNUMBER };
+                ItemContract.ItemEntry.COLUMN_ITEM_CONTACTNUMBER};
         // This loader will execute the ContentProvider's query method on a background thread.
         return new CursorLoader(this,   // Parent activity context
                 mCurrentItemUri,        // Query the content URI for the current item
@@ -310,14 +311,17 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
 
         // Proceed with moving to the first row of the cursor and reading data from it
         // (This should be the only row in the cursor)
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             // Find the columns of item attributes that we're interested in
             int nameColumnIndex = cursor.getColumnIndex(ItemContract.ItemEntry.COLUMN_ITEM_NAME);
             int qtyColumnIndex = cursor.getColumnIndex(ItemContract.ItemEntry.COLUMN_ITEM_QTY);
             int priceColumnIndex = cursor.getColumnIndex(ItemContract.ItemEntry.COLUMN_ITEM_PRICE);
-            int descriptionColumnIndex = cursor.getColumnIndex(ItemContract.ItemEntry.COLUMN_ITEM_DESCRIPTION);
-            int pictureColumnIndex = cursor.getColumnIndex(ItemContract.ItemEntry.COLUMN_ITEM_PICTURE);
-            int contactColumnIndex = cursor.getColumnIndex(ItemContract.ItemEntry.COLUMN_ITEM_CONTACTNUMBER);
+            int descriptionColumnIndex = cursor.getColumnIndex(ItemContract.ItemEntry
+                    .COLUMN_ITEM_DESCRIPTION);
+            int pictureColumnIndex = cursor.getColumnIndex(ItemContract.ItemEntry
+                    .COLUMN_ITEM_PICTURE);
+            int contactColumnIndex = cursor.getColumnIndex(ItemContract.ItemEntry
+                    .COLUMN_ITEM_CONTACTNUMBER);
 
             // Extract out the value from the Cursor for the given column index.
             String name = cursor.getString(nameColumnIndex);
@@ -325,7 +329,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
             float price = cursor.getFloat(priceColumnIndex);
             String description = cursor.getString(descriptionColumnIndex);
             byte[] bb = cursor.getBlob(pictureColumnIndex);
-            Bitmap bmp = BitmapFactory.decodeByteArray(bb,0,bb.length);
+            Bitmap bmp = BitmapFactory.decodeByteArray(bb, 0, bb.length);
             mItemImage.setImageBitmap(bmp);
             String contactNumber = cursor.getString(contactColumnIndex);
 
@@ -361,8 +365,10 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
         // positive and negative buttons on the dialog.
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.alert_dialog_discard_changes);
-        builder.setPositiveButton(R.string.alert_dialog_positive_button, discardButtonClickListener);
-        builder.setNegativeButton(R.string.alert_dialog_negative_button, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.alert_dialog_positive_button,
+                discardButtonClickListener);
+        builder.setNegativeButton(R.string.alert_dialog_negative_button, new DialogInterface
+                .OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked the "Keep editing" button, so dismiss the dialog and continue
                 // editing the item.

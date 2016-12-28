@@ -145,14 +145,16 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager
         // and negative buttons on the dialog.
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.alert_dialog_delete_item_prompt);
-        builder.setPositiveButton(R.string.alert_dialog_delete_all, new DialogInterface.OnClickListener(){
-            public void onClick(DialogInterface dialog, int id){
+        builder.setPositiveButton(R.string.alert_dialog_delete_all, new DialogInterface
+                .OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
                 // User clicked the "Delete" button, so delete the item.
                 deleteAllItems();
             }
         });
-        builder.setNegativeButton(R.string.alert_dialog_cancel, new DialogInterface.OnClickListener(){
-            public void onClick(DialogInterface dialog, int id){
+        builder.setNegativeButton(R.string.alert_dialog_cancel, new DialogInterface
+                .OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
                 // User clicked the "Cancel" button, so dismiss the dialog and continue editing.
                 if (dialog != null) {
                     dialog.dismiss();
@@ -188,7 +190,7 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager
                 ItemContract.ItemEntry._ID,
                 ItemContract.ItemEntry.COLUMN_ITEM_NAME,
                 ItemContract.ItemEntry.COLUMN_ITEM_QTY,
-                ItemContract.ItemEntry.COLUMN_ITEM_PRICE };
+                ItemContract.ItemEntry.COLUMN_ITEM_PRICE};
         // This loader will execute the ContentProvider's query method on a background thread
         return new CursorLoader(this,               // Parent activity context
                 ItemContract.ItemEntry.CONTENT_URI, // Provider content URI to query
@@ -209,6 +211,7 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager
         // Callback called when the data needs to be deleted
         mCursorAdapter.swapCursor(null);
     }
+
     public void sellItemListView(View v) {
         ListView listview1 = (ListView) findViewById(R.id.list_view_items);
         int itemId = (int) v.getTag();
@@ -223,7 +226,7 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager
         cursor.moveToFirst();
         // Extract out the value from the cursor
         int quantity = cursor.getInt(qtyColumnIndex);
-        if (quantity > 0){
+        if (quantity > 0) {
             quantity = quantity - 1;
             ContentValues values = new ContentValues();
             values.put(ItemContract.ItemEntry.COLUMN_ITEM_QTY, quantity);
@@ -232,7 +235,8 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager
                 // If no rows were affected, then there was an error with the update.
                 Toast.makeText(this, R.string.error_saving_item, Toast.LENGTH_SHORT).show();
             } else {
-                // Otherwise the item update was successful and we can display a toast and refresh list
+                // Otherwise the item update was successful and we can display a toast and
+                // refresh list
                 Toast.makeText(this, R.string.item_saved, Toast.LENGTH_SHORT).show();
             }
         } else {

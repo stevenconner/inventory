@@ -226,7 +226,8 @@ public class ItemProvider extends ContentProvider {
                 // delete.
                 selection = ItemContract.ItemEntry._ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
-                rowsDeleted = database.delete(ItemContract.ItemEntry.TABLE_NAME, selection, selectionArgs);
+                rowsDeleted = database.delete(ItemContract.ItemEntry.TABLE_NAME, selection,
+                        selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Deletion is not supported for " + uri);
