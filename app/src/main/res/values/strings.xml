@@ -32,4 +32,5 @@
     <string name="error_selling_item">Cannot sell item, quantity is already at 0!</string>
     <string name="order_more">Order More</string>
     <string name="details_action_edit">Edit</string>
+    <string name="item_not_saved_need_more_input">Item not saved, all fields must be filled out please!</string>
 </resources>

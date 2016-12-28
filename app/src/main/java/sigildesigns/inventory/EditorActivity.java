@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
@@ -36,6 +37,8 @@ import sigildesigns.inventory.data.ItemContract;
 
 public class EditorActivity extends AppCompatActivity implements LoaderManager
         .LoaderCallbacks<Cursor> {
+
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     // Identifier for the item data loader
     private static final int EXISTING_ITEM_LOADER = 0;
@@ -120,6 +123,14 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
         mPriceEditText.setOnTouchListener(mTouchListener);
         mQtyEditText.setOnTouchListener(mTouchListener);
         mContactNumber.setOnTouchListener(mTouchListener);
+
+        // Set up click listener for imageview to take a picture
+        mItemImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dispatchTakePictureIntent();
+            }
+        });
     }
 
     // Get user input from editor and save item into database
@@ -149,10 +160,11 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
 
 
         // Check if this is supposed to be a new item and check if fields are blank.
-        if (mCurrentItemUri == null && TextUtils.isEmpty(nameString) && TextUtils.isEmpty
+        if (mCurrentItemUri == null && TextUtils.isEmpty(nameString) || TextUtils.isEmpty
                 (descriptionString)
-                && TextUtils.isEmpty(priceString) && TextUtils.isEmpty(qtyString)) {
+                || TextUtils.isEmpty(priceString) || TextUtils.isEmpty(qtyString)) {
             // Since no fields were modified, we can return early without creating a new item.
+            Toast.makeText(this, R.string.item_not_saved_need_more_input, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -380,5 +392,20 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
         // Create and show the AlertDialog
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            mItemImage.setImageBitmap(imageBitmap);
+        }
     }
 }

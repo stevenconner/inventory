@@ -53,7 +53,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:hint="@string/editor_price_hint"/>
+                android:hint="@string/editor_price_hint"
+                android:inputType="numberDecimal"/>
 
             <EditText
                 android:id="@+id/editor_view_description_et"
@@ -69,7 +70,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_below="@id/editor_view_price_et"
-                android:hint="@string/editor_qty_hint"/>
+                android:hint="@string/editor_qty_hint"
+                android:inputType="number"/>
 
             <EditText
                 android:id="@+id/editor_view_contactnumber_et"
@@ -78,6 +80,7 @@
                 android:layout_below="@id/editor_view_qty_et"
                 android:layout_centerHorizontal="true"
                 android:hint="@string/editor_contactnumber_hint"
+                android:inputType="number"
                 android:padding="16dp"/>
         </RelativeLayout>
     </LinearLayout>
