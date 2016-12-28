@@ -24,8 +24,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_marginTop="?android:attr/actionBarSize"
+        android:orientation="vertical"
         android:padding="16dp"
         tools:context=".EditorActivity">
 
@@ -70,6 +70,15 @@
                 android:layout_alignParentRight="true"
                 android:layout_below="@id/editor_view_price_et"
                 android:hint="@string/editor_qty_hint"/>
+
+            <EditText
+                android:id="@+id/editor_view_contactnumber_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/editor_view_qty_et"
+                android:layout_centerHorizontal="true"
+                android:hint="@string/editor_contactnumber_hint"
+                android:padding="16dp"/>
         </RelativeLayout>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

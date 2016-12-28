@@ -42,10 +42,11 @@
     </RelativeLayout>
 
     <ListView
-        android:paddingTop="?android:attr/actionBarSize"
         android:id="@+id/list_view_items"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:descendantFocusability="blocksDescendants"
+        android:paddingTop="?android:attr/actionBarSize"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

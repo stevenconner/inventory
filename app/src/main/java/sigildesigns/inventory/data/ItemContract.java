@@ -58,5 +58,8 @@ public class ItemContract {
 
         // Picture of the item. Type BLOB.
         public static final String COLUMN_ITEM_PICTURE = "picture";
+
+        // Contact number for the item to order more. Type TEXT.
+        public static final String COLUMN_ITEM_CONTACTNUMBER = "contactnumber";
     }
 }

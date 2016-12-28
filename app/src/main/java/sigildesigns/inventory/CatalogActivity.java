@@ -4,12 +4,17 @@ import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,6 +23,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import java.io.ByteArrayOutputStream;
 
 import sigildesigns.inventory.data.ItemContract;
 
@@ -62,7 +70,7 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 // Create a new intent to go to {@link EditorActivity}
-                Intent intent = new Intent(CatalogActivity.this, EditorActivity.class);
+                Intent intent = new Intent(CatalogActivity.this, DetailsActivity.class);
 
                 /**
                  * Form the content URI that represents the specific item that was clicked on,
@@ -85,6 +93,15 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager
         getLoaderManager().initLoader(ITEM_LOADER, null, this);
     }
 
+    private byte[] convertImage() {
+        Drawable myDrawable = getResources().getDrawable(R.drawable.kaladeshboosters);
+        Bitmap picture = ((BitmapDrawable) myDrawable).getBitmap();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        picture.compress(Bitmap.CompressFormat.PNG, 100, bos);
+        byte[] bArray = bos.toByteArray();
+        return bArray;
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -92,6 +109,7 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager
 
     // Helper method to insert hardcoded item data into the database. For debugging purposes only.
     private void insertItem() {
+        byte[] imageByte = convertImage();
         // Create a ContentValues object where column names are the keys, and item attributes are
         // values.
         ContentValues values = new ContentValues();
@@ -100,7 +118,8 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager
         values.put(ItemContract.ItemEntry.COLUMN_ITEM_PRICE, 3.99);
         values.put(ItemContract.ItemEntry.COLUMN_ITEM_DESCRIPTION, "15 card booster pack for the " +
                 "MTG set Kaladesh.");
-        values.put(ItemContract.ItemEntry.COLUMN_ITEM_PICTURE, R.drawable.kaladeshboosters);
+        values.put(ItemContract.ItemEntry.COLUMN_ITEM_PICTURE, convertImage());
+        values.put(ItemContract.ItemEntry.COLUMN_ITEM_CONTACTNUMBER, "18003246496");
 
         // Insert the dummy data into the database
         Uri newUri = getContentResolver().insert(ItemContract.ItemEntry.CONTENT_URI, values);
@@ -120,6 +139,32 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager
         return true;
     }
 
+    // Prompt the user to confirm they want to delete this item.
+    private void showDeleteConfirmationDialog() {
+        // Create an AlertDialog.Builder and set the message and click listeners for the positive
+        // and negative buttons on the dialog.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.alert_dialog_delete_item_prompt);
+        builder.setPositiveButton(R.string.alert_dialog_delete_all, new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int id){
+                // User clicked the "Delete" button, so delete the item.
+                deleteAllItems();
+            }
+        });
+        builder.setNegativeButton(R.string.alert_dialog_cancel, new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int id){
+                // User clicked the "Cancel" button, so dismiss the dialog and continue editing.
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -130,7 +175,7 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager
                 insertItem();
                 return true;
             case R.id.action_delete_all_entries:
-                deleteAllItems();
+                showDeleteConfirmationDialog();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -163,5 +208,35 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager
     public void onLoaderReset(Loader<Cursor> loader) {
         // Callback called when the data needs to be deleted
         mCursorAdapter.swapCursor(null);
+    }
+    public void sellItemListView(View v) {
+        ListView listview1 = (ListView) findViewById(R.id.list_view_items);
+        int itemId = (int) v.getTag();
+        // Make a projection to get the qty from the current item
+        String[] projection = {
+                ItemContract.ItemEntry.COLUMN_ITEM_QTY
+        };
+        Uri newUri = ContentUris.withAppendedId(ItemContract.ItemEntry.CONTENT_URI, itemId);
+        Cursor cursor = getContentResolver().query(newUri, projection, null, null, null);
+        // Find the column we need
+        int qtyColumnIndex = cursor.getColumnIndex(ItemContract.ItemEntry.COLUMN_ITEM_QTY);
+        cursor.moveToFirst();
+        // Extract out the value from the cursor
+        int quantity = cursor.getInt(qtyColumnIndex);
+        if (quantity > 0){
+            quantity = quantity - 1;
+            ContentValues values = new ContentValues();
+            values.put(ItemContract.ItemEntry.COLUMN_ITEM_QTY, quantity);
+            int rowsAffected = getContentResolver().update(newUri, values, null, null);
+            if (rowsAffected == 0) {
+                // If no rows were affected, then there was an error with the update.
+                Toast.makeText(this, R.string.error_saving_item, Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise the item update was successful and we can display a toast and refresh list
+                Toast.makeText(this, R.string.item_saved, Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(this, R.string.error_selling_item, Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
@@ -49,6 +50,7 @@ public class ItemCursorAdapter extends CursorAdapter {
         TextView tvName = (TextView) view.findViewById(R.id.name);
         TextView tvQty = (TextView) view.findViewById(R.id.quantity);
         TextView tvPrice = (TextView) view.findViewById(R.id.price);
+        Button button = (Button) view.findViewById(R.id.sale_button);
         // Extract properties from cursor
         String name = cursor.getString(cursor.getColumnIndexOrThrow(ItemContract.ItemEntry
                 .COLUMN_ITEM_NAME));
@@ -64,5 +66,8 @@ public class ItemCursorAdapter extends CursorAdapter {
         tvName.setText(name);
         tvQty.setText(stringQty);
         tvPrice.setText(stringPrice);
+
+        button.setTag(cursor.getInt(cursor.getColumnIndexOrThrow(ItemContract.ItemEntry._ID)));
     }
+
 }

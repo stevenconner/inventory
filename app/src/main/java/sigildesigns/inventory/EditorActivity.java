@@ -58,6 +58,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
     // ImageView field to display the item's picture
     private ImageView mItemImage;
 
+    // EditText field to enter item's contact number
+    private EditText mContactNumber;
+
     // Boolean flag that keeps track of whether the item has been edited (true) or not (false)
     private boolean mItemHasChanged = false;
 
@@ -106,6 +109,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
         mPriceEditText = (EditText) findViewById(R.id.editor_view_price_et);
         mQtyEditText = (EditText) findViewById(R.id.editor_view_qty_et);
         mItemImage = (ImageView) findViewById(R.id.editor_view_image);
+        mContactNumber = (EditText) findViewById(R.id.editor_view_contactnumber_et);
+
 
         // Setup OnTouchListeners on all the input fields, so we can determine if the user has
         // touched or modified them. This will let us know if there are unsaved changes or not,
@@ -114,6 +119,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
         mDescriptionEditText.setOnTouchListener(mTouchListener);
         mPriceEditText.setOnTouchListener(mTouchListener);
         mQtyEditText.setOnTouchListener(mTouchListener);
+        mContactNumber.setOnTouchListener(mTouchListener);
     }
 
     // Get user input from editor and save item into database
@@ -123,6 +129,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
         String descriptionString = mDescriptionEditText.getText().toString().trim();
         String priceString = mPriceEditText.getText().toString().trim();
         String qtyString = mQtyEditText.getText().toString().trim();
+        String contactNumberString = mContactNumber.getText().toString().trim();
 
         // If the price is not provided by the user, don't try to parse the string into a float,
         // instead use 0 as default.
@@ -157,6 +164,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
         values.put(ItemContract.ItemEntry.COLUMN_ITEM_PICTURE, imageByte);
         values.put(ItemContract.ItemEntry.COLUMN_ITEM_PRICE, priceFloat);
         values.put(ItemContract.ItemEntry.COLUMN_ITEM_QTY, qtyInt);
+        values.put(ItemContract.ItemEntry.COLUMN_ITEM_CONTACTNUMBER, contactNumberString);
 
         // Determine if this is a new or existing item by checking if mCurrentItemUri is null or not
         if (mCurrentItemUri == null) {
@@ -200,18 +208,22 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        // If this is a new item, hide the "Delete" menu item.
-        if (mCurrentItemUri == null) {
-            MenuItem menuItem = menu.findItem(R.id.action_delete);
-            menuItem.setVisible(false);
-        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // User clicked on a menu option in the app bar overflow menu
+
+        // Create a click listener to handle the user confirming that changes should be discarded.
+        DialogInterface.OnClickListener discardButtonClickListener =
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // User clicked "Discard" button, close the current activity
+                        finish();
+                    }
+                };
         switch (item.getItemId()){
             // Respond to a click on the "Save" menu option.
             case R.id.action_save:
@@ -220,14 +232,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
                 // Exit activity
                 finish();
                 return true;
-            // Respond to a click on the "Delete" menu option
-            case R.id.action_delete:
-                // Pop up confirmation dialog for deletion
-                showDeleteConfirmationDialog();
-                return true;
             case R.id.action_cancel:
-                // Cancel saving the item.
-                finish();
+                // Show a dialog that notifies the user they have unsaved changes.
+                showUnsavedChangesDialog(discardButtonClickListener);
                 return true;
             case android.R.id.home:
                 // If the item hasn't changed, continue with navigating up to parent activity
@@ -237,18 +244,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
                     return true;
                 }
 
-                // Otherwise if there are unsaved changes, setup a dialog to warn the user. Create
-                // a click listener to handle the user confirming that changes should be discarded.
-                DialogInterface.OnClickListener discardButtonClickListener =
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                // User clicked "Discard" button, navigate to parent activity
-                                NavUtils.navigateUpFromSameTask(EditorActivity.this);
-                            }
-                        };
-                // Show a dialog that notifies the user they have unsaved changes.
-                showUnsavedChangesDialog(discardButtonClickListener);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -295,7 +290,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
                 ItemContract.ItemEntry.COLUMN_ITEM_QTY,
                 ItemContract.ItemEntry.COLUMN_ITEM_PRICE,
                 ItemContract.ItemEntry.COLUMN_ITEM_DESCRIPTION,
-                ItemContract.ItemEntry.COLUMN_ITEM_PICTURE };
+                ItemContract.ItemEntry.COLUMN_ITEM_PICTURE,
+                ItemContract.ItemEntry.COLUMN_ITEM_CONTACTNUMBER };
         // This loader will execute the ContentProvider's query method on a background thread.
         return new CursorLoader(this,   // Parent activity context
                 mCurrentItemUri,        // Query the content URI for the current item
@@ -321,6 +317,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
             int priceColumnIndex = cursor.getColumnIndex(ItemContract.ItemEntry.COLUMN_ITEM_PRICE);
             int descriptionColumnIndex = cursor.getColumnIndex(ItemContract.ItemEntry.COLUMN_ITEM_DESCRIPTION);
             int pictureColumnIndex = cursor.getColumnIndex(ItemContract.ItemEntry.COLUMN_ITEM_PICTURE);
+            int contactColumnIndex = cursor.getColumnIndex(ItemContract.ItemEntry.COLUMN_ITEM_CONTACTNUMBER);
 
             // Extract out the value from the Cursor for the given column index.
             String name = cursor.getString(nameColumnIndex);
@@ -330,13 +327,14 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
             byte[] bb = cursor.getBlob(pictureColumnIndex);
             Bitmap bmp = BitmapFactory.decodeByteArray(bb,0,bb.length);
             mItemImage.setImageBitmap(bmp);
+            String contactNumber = cursor.getString(contactColumnIndex);
 
             // Update the views on the screen with the values from the database
             mNameEditText.setText(name);
-            mQtyEditText.setText(quantity);
+            mQtyEditText.setText(String.valueOf(quantity));
             mPriceEditText.setText(String.valueOf(price));
             mDescriptionEditText.setText(description);
-
+            mContactNumber.setText(contactNumber);
         }
     }
 
@@ -376,53 +374,5 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager
         // Create and show the AlertDialog
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
-    }
-
-    // Prompt the user to confirm they want to delete this item.
-    private void showDeleteConfirmationDialog() {
-        // Create an AlertDialog.Builder and set the message and click listeners for the positive
-        // and negative buttons on the dialog.
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.alert_dialog_delete_item_prompt);
-        builder.setPositiveButton(R.string.alert_dialog_delete, new DialogInterface.OnClickListener(){
-            public void onClick(DialogInterface dialog, int id){
-                // User clicked the "Delete" button, so delete the item.
-                deleteItem();
-            }
-        });
-        builder.setNegativeButton(R.string.alert_dialog_cancel, new DialogInterface.OnClickListener(){
-            public void onClick(DialogInterface dialog, int id){
-                // User clicked the "Cancel" button, so dismiss the dialog and continue editing.
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
-            }
-        });
-
-        // Create and show the AlertDialog
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
-
-    // Perform the deletion of the item in the database
-    private void deleteItem(){
-        // Only perform the delete if this is an existing item.
-        if (mCurrentItemUri != null) {
-            // Call the ContentResolver to delete the pet at the given content URI.
-            // Pass in null for the selection and selection args because the mCurrentItemUri
-            // content URI already identifies the item that we want.
-            int rowsDeleted = getContentResolver().delete(mCurrentItemUri, null, null);
-
-            // Show a toast message depending on whether or not the delete was successful.
-            if (rowsDeleted == 0) {
-                // If no rows were deleted, then there was an error with the delete.
-                Toast.makeText(this, R.string.error_deleting_item, Toast.LENGTH_SHORT).show();
-            } else {
-                // Otherwise the delete was successful and we can display a toast.
-                Toast.makeText(this, R.string.item_deleted, Toast.LENGTH_SHORT).show();
-            }
-        }
-        // Close the activity
-        finish();
     }
 }

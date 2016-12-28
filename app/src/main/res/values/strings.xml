@@ -6,6 +6,7 @@
     <string name="editor_price_hint">Enter Price</string>
     <string name="editor_description_hint">Enter Description</string>
     <string name="editor_qty_hint">Enter Qty</string>
+    <string name="editor_contactnumber_hint">Enter Contact Number</string>
     <string name="editor_action_save">Save</string>
     <string name="editor_action_cancel">Cancel</string>
     <string name="editor_action_delete">Delete</string>
@@ -23,4 +24,12 @@
     <string name="alert_dialog_cancel">Cancel</string>
     <string name="error_deleting_item">Error with deleting item.</string>
     <string name="item_deleted">Item Deleted.</string>
+    <string name="name">Name:</string>
+    <string name="description">Description:</string>
+    <string name="quantity">Qty:</string>
+    <string name="price">Price:</string>
+    <string name="alert_dialog_delete_all">Delete all entries?</string>
+    <string name="error_selling_item">Cannot sell item, quantity is already at 0!</string>
+    <string name="order_more">Order More</string>
+    <string name="details_action_edit">Edit</string>
 </resources>

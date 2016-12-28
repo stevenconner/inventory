@@ -18,11 +18,16 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".DetailsActivity"
+            android:label="Item Details"
+            android:parentActivityName=".CatalogActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
             android:name=".EditorActivity"
             android:label="Edit Item"
             android:parentActivityName=".CatalogActivity"
             android:theme="@style/AppTheme.NoActionBar">
-
         </activity>
 
         <provider
